@@ -164,11 +164,10 @@ class Everpscustomerconnect extends Module
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_exec($handle);
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        curl_close($handle);
         if ($httpCode != 200) {
-            curl_close($handle);
             return false;
         }
-        $response = curl_close($handle);
         $module_version = Tools::file_get_contents(
             $upgrade_link
         );
