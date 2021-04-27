@@ -46,7 +46,7 @@ class EverpscustomerconnectEverloginModuleFrontController extends ModuleFrontCon
             Tools::redirect('index.php');
         }
         $isSeven = Tools::version_compare(_PS_VERSION_, '1.7', '>=') ? true : false;
-        $updated_version = Tools::version_compare(_PS_VERSION_, '1.7.6.5', '>=') ? true : false;
+        $updated_version = Tools::version_compare(_PS_VERSION_, '1.7.6.6', '>=') ? true : false;
         $customer = new Customer(
             (int)Tools::getValue('id_ever_customer')
         );
