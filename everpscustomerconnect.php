@@ -1,6 +1,6 @@
 <?php
 /**
- * 2019-2021 Team Ever
+ * 2019-2022 Team Ever
  *
  * NOTICE OF LICENSE
  *
@@ -13,7 +13,7 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  *  @author    Team Ever <https://www.team-ever.com/>
- *  @copyright 2019-2021 Team Ever
+ *  @copyright 2019-2022 Team Ever
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -31,7 +31,7 @@ class Everpscustomerconnect extends Module
     {
         $this->name = 'everpscustomerconnect';
         $this->tab = 'administration';
-        $this->version = '2.1.8';
+        $this->version = '2.3.0';
         $this->author = 'Team Ever';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -52,6 +52,7 @@ class Everpscustomerconnect extends Module
         return parent::install()
             && $this->registerHook('displayAdminOrderContentOrder')
             && $this->registerHook('displayAdminOrder')
+            && $this->registerHook('actionGetAdminOrderButtons')
             && $this->registerHook('displayAdminCustomers');
     }
 
@@ -88,7 +89,10 @@ class Everpscustomerconnect extends Module
                     'everlogin',
                     array(
                         'id_ever_customer' => $customer->id,
-                        'evertoken' => $this->everToken
+                        'evertoken' => $this->everToken,
+                        'ever_id_cart' => Cart::lastNoneOrderedCart(
+                            (int)$customer->id
+                        )
                     )
                 )
             ));
@@ -152,6 +156,34 @@ class Everpscustomerconnect extends Module
     public function hookDisplayAdminOrder($params)
     {
         return $this->hookDisplayAdminCustomers($params);
+    }
+
+    /**
+     * Add buttons to main buttons bar
+     */
+    public function hookActionGetAdminOrderButtons(array $params)
+    {
+        $translator = $this->getTranslator();
+        $order = new Order($params['id_order']);
+        if (Validate::isLoadedObject($order)) {
+            $link = new Link();
+            $connect_link = $link->getModuleLink(
+                'cl_pscustomerconnect',
+                'cllogin',
+                array(
+                    'id_ever_customer' => $order->id_customer,
+                    'ever_token' => $this->celToken,
+                    'ever_id_cart' => Cart::lastNoneOrderedCart($order->id_customer)
+                )
+            );
+            /** @var \PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButtonsCollection $bar */
+            $bar = $params['actions_bar_buttons_collection'];
+            $bar->add(
+                new \PrestaShopBundle\Controller\Admin\Sell\Order\ActionsBarButton(
+                    'btn-info', ['href' => $connect_link, 'target' => '_blank'], $translator->trans('Connect to customer account', [], 'Modules.Cl_pscustomerconnect.Admin')
+                )
+            );
+        }
     }
 
     public function checkLatestEverModuleVersion($module, $version)

@@ -1,6 +1,6 @@
 <?php
 /**
- * 2019-2021 Team Ever
+ * 2019-2022 Team Ever
  *
  * NOTICE OF LICENSE
  *
@@ -13,7 +13,7 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  *  @author    Team Ever <https://www.team-ever.com/>
- *  @copyright 2019-2021 Team Ever
+ *  @copyright 2019-2022 Team Ever
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -58,7 +58,20 @@ class EverpscustomerconnectEverloginModuleFrontController extends ModuleFrontCon
             $this->context->cookie->passwd = $customer->passwd;
             $this->context->cookie->logged = 1;
             $this->context->cookie->email = $customer->email;
+            $this->context->cookie->secure_key = $customer->secure_key;
             $this->context->cookie->is_guest = $customer->isGuest();
+            $this->context->cart->secure_key = $customer->secure_key;
+            if (Tools::getValue('ever_id_cart')
+                && Validate::isInt(Tools::getValue('ever_id_cart'))
+            ) {
+                $cart = new Cart(
+                    (int)Tools::getValue('ever_id_cart')
+                );
+                if (Validate::isLoadedObject($cart)) {
+                    $this->context->cart = $cart;
+                    $this->context->cookie->id_cart = $cart->id;
+                }
+            }
             if ((bool)$isSeven === true && (bool)$updated_version === true) {
                 $this->context->cookie->registerSession(new CustomerSession());
             }
