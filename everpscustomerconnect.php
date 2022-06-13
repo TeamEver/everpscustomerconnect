@@ -172,7 +172,7 @@ class Everpscustomerconnect extends Module
                 'everlogin',
                 array(
                     'id_ever_customer' => $order->id_customer,
-                    'ever_token' => $this->celToken,
+                    'ever_token' => $this->everToken,
                     'ever_id_cart' => Cart::lastNoneOrderedCart($order->id_customer)
                 )
             );
