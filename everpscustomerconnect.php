@@ -168,8 +168,8 @@ class Everpscustomerconnect extends Module
         if (Validate::isLoadedObject($order)) {
             $link = new Link();
             $connect_link = $link->getModuleLink(
-                'cl_pscustomerconnect',
-                'cllogin',
+                'everpscustomerconnect',
+                'everlogin',
                 array(
                     'id_ever_customer' => $order->id_customer,
                     'ever_token' => $this->celToken,
