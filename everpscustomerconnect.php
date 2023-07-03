@@ -31,7 +31,7 @@ class Everpscustomerconnect extends Module
     {
         $this->name = 'everpscustomerconnect';
         $this->tab = 'administration';
-        $this->version = '2.3.1';
+        $this->version = '2.3.2';
         $this->author = 'Team Ever';
         $this->need_instance = 0;
         $this->bootstrap = true;
