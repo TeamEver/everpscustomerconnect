@@ -50,7 +50,6 @@ class Everpscustomerconnect extends Module
     public function install()
     {
         return parent::install()
-            && $this->registerHook('displayAdminOrderContentOrder')
             && $this->registerHook('displayAdminOrder')
             && $this->registerHook('actionGetAdminOrderButtons')
             && $this->registerHook('displayAdminCustomers');
