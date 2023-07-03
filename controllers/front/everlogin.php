@@ -35,6 +35,7 @@ class EverpscustomerconnectEverloginModuleFrontController extends ModuleFrontCon
 
     public function initContent()
     {
+        // die(var_dump(Tools::getAllValues()));
         parent::initContent();
         if (!Tools::getIsset('evertoken')
             || Tools::encrypt('everpscustomerconnect/everlogin') != Tools::getValue('evertoken')
@@ -48,11 +49,11 @@ class EverpscustomerconnectEverloginModuleFrontController extends ModuleFrontCon
         $isSeven = Tools::version_compare(_PS_VERSION_, '1.7', '>=') ? true : false;
         $updated_version = Tools::version_compare(_PS_VERSION_, '1.7.6.6', '>=') ? true : false;
         $customer = new Customer(
-            (int)Tools::getValue('id_ever_customer')
+            (int) Tools::getValue('id_ever_customer')
         );
         if (Validate::isLoadedObject($customer)) {
             if ($this->context->customer->isLogged()) {
-                $this->context->customer->logout()
+                $this->context->customer->logout();
             }
             $customer->logged = 1;
             $this->context->cookie->id_customer = (int) $customer->id;
@@ -68,7 +69,7 @@ class EverpscustomerconnectEverloginModuleFrontController extends ModuleFrontCon
                 && Validate::isInt(Tools::getValue('ever_id_cart'))
             ) {
                 $cart = new Cart(
-                    (int)Tools::getValue('ever_id_cart')
+                    (int) Tools::getValue('ever_id_cart')
                 );
                 if (Validate::isLoadedObject($cart)) {
                     $this->context->cart = $cart;

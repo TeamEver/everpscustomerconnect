@@ -90,7 +90,7 @@ class Everpscustomerconnect extends Module
                         'id_ever_customer' => $customer->id,
                         'evertoken' => $this->everToken,
                         'ever_id_cart' => Cart::lastNoneOrderedCart(
-                            (int)$customer->id
+                            (int) $customer->id
                         )
                     )
                 )
@@ -99,7 +99,7 @@ class Everpscustomerconnect extends Module
 
         $this->context->smarty->assign(array(
             'evercustomerimage_dir' => $this->_path.'views/img/',
-            'ever_token' => $this->everToken,
+            'evertoken' => $this->everToken,
             'base_uri' => __PS_BASE_URI__,
         ));
 
@@ -117,11 +117,11 @@ class Everpscustomerconnect extends Module
 
     public function hookDisplayAdminCustomers($params)
     {
-        if (isset($params) && $params['id_customer']) {
-            $id_customer = (int)$params['id_customer'];
+        if (isset($params['id_customer']) && $params['id_customer']) {
+            $id_customer = (int) $params['id_customer'];
         } else {
-            $order = new Order((int)$params['id_order']);
-            $id_customer = (int)$order->id_customer;
+            $order = new Order((int) $params['id_order']);
+            $id_customer = (int) $order->id_customer;
         }
         $customer = new Customer(
             $id_customer
@@ -145,8 +145,8 @@ class Everpscustomerconnect extends Module
         }
 
         $this->context->smarty->assign(array(
-            'evercustomerimage_dir' => $this->_path.'views/img/',
-            'ever_token' => $this->everToken,
+            'evercustomerimage_dir' => $this->_path . 'views/img/',
+            'evertoken' => $this->everToken,
             'base_uri' => __PS_BASE_URI__,
         ));
         return $this->display(__FILE__, 'views/templates/hook/admin.tpl');
@@ -171,7 +171,7 @@ class Everpscustomerconnect extends Module
                 'everlogin',
                 array(
                     'id_ever_customer' => $order->id_customer,
-                    'ever_token' => $this->everToken,
+                    'evertoken' => $this->everToken,
                     'ever_id_cart' => Cart::lastNoneOrderedCart($order->id_customer)
                 )
             );
@@ -191,20 +191,27 @@ class Everpscustomerconnect extends Module
         .$module
         .'&version='
         .$version;
-        $handle = curl_init($upgrade_link);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($handle);
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        curl_close($handle);
-        if ($httpCode != 200) {
+        try {
+            $handle = curl_init($upgrade_link);
+            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($handle);
+            $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+            curl_close($handle);
+            if ($httpCode != 200) {
+                return false;
+            }
+            $module_version = Tools::file_get_contents(
+                $upgrade_link
+            );
+            if ($module_version && $module_version > $version) {
+                return true;
+            }
+            return false;
+        } catch (Exception $e) {
+            PrestaShopLogger::addLog(
+                'unable to check Team Ever module upgrade'
+            );
             return false;
         }
-        $module_version = Tools::file_get_contents(
-            $upgrade_link
-        );
-        if ($module_version && $module_version > $version) {
-            return true;
-        }
-        return false;
     }
 }
