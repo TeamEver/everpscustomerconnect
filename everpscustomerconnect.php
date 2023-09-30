@@ -31,7 +31,7 @@ class Everpscustomerconnect extends Module
     {
         $this->name = 'everpscustomerconnect';
         $this->tab = 'administration';
-        $this->version = '2.3.2';
+        $this->version = '2.3.3';
         $this->author = 'Team Ever';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -138,7 +138,8 @@ class Everpscustomerconnect extends Module
                     'everlogin',
                     array(
                         'id_ever_customer' => $customer->id,
-                        'evertoken' => $this->everToken
+                        'evertoken' => $this->everToken,
+                        'ever_id_cart' => Cart::lastNoneOrderedCart($id_customer)
                     )
                 )
             ));
